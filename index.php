@@ -1,46 +1,64 @@
 <body onLoad="begintimer()">
 
-<script language="">
-var limit="104:00"//หน่วยเป็นวนาที:วินาที
-if (document.images){
-var parselimit=limit.split(":")
-parselimit=parselimit[0]*60+parselimit[1]*1
-}
-function begintimer(){
-if (!document.images)
-return
-if (parselimit==1)
-// เหตุการณ์ที่ต้องการให้เกิดขึ้น
-// window.location='page.php'; ถ้าต้องการให้กระโดดไปยัง Page อื่น
-frmTest.submit();
-else{
-parselimit-=1
-curmin=Math.floor(parselimit/60)
-cursec=parselimit%60
-if (curmin!=0)
-curtime="เหลือ <font color=red> "+curmin+" </font>นาที กับ <font color=red>"+cursec+" </font>วินาที "
-else
-if(cursec==0)
-{
-alert('หมดเวลาแล้วจ้า');
-}
-else
-{
-curtime="เวลาที่เหลือ <font color=red>"+cursec+" </font>วินาที "
-}
-document.getElementById('dplay').innerHTML = curtime;
-setTimeout("begintimer()",1000)
-}
+<script type="text/javascript">
 
+    //'<?php echo $_SESSION["ucredit"].beginTime;?>';
+    // time must be format YYYY-MM-DD HH:mm:ss
+    // moment('2020-02-02 12:00:00') or moment({ year: 2020, month: 1, day :2, hour :12, minute: 00})
+    var beginTime = moment({ year: 2020, month: 1, day :1, hour :14, minute: 30})
 
-//$min_amout='+curmin';
-//	var m = +curmin;
-alert("นาทีคงเหลือ"+curmin);//อยากไห้มันโยนหรือเก็บค่าตัวแปร +curmin ไปให้ php ได้โยนไปแบบ post ก็ได้ค่อยไปดักเอา
-}
-//-->
+    
+    function checkUseTime() {
+        var end = moment(Date.now());
+
+        if(!beginTime.isValid()){
+          console.error("Invalid moment format")
+          return 
+        }
+
+        if (beginTime.isBefore(end)) {
+
+            var differenceInMs = end.diff(beginTime.format('YYYY-MM-DD HH:mm:ss')); // diff yields milliseconds
+            var duration = moment.duration(differenceInMs); // moment.duration accepts ms
+            var differenceInMinutes = duration.asMinutes();
+
+            var useTime = Math.ceil(differenceInMinutes)
+            var useTimeText = beginTime.fromNow();
+            var result = {text: useTimeText, minute: useTime}
+            return result
+        }
+    }
+
+    function saveUseTime() {
+        var data = checkUseTime();
+
+        $.ajax({  
+            type: 'POST',  
+            url: 'test.php', 
+            data: data,
+            success: function(response) {
+                // {isExpired: false, remain: 50, limit: 100}
+                if (response.isExpired) {
+                    alert("Your account had expired")
+                } else {
+                    alert("Remainng time " + response.remain + " minutes")
+                }
+            },
+            error: function(err) {
+                console.error("Error occur to send useTime " + err)
+            }
+        });
+    }
+
 </script>
+
+
 <div id=dplay ></div>
+
+
 <?php echo"curmin= $curmin";?>
+
+
 
 <form name="frmTest" action="Modules/logout.php">
 

@@ -1,5 +1,6 @@
 <body onLoad="begintimer()">
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment-with-locales.min.js"></script>
 <script type="text/javascript">
 
     //'<?php echo $_SESSION["ucredit"].beginTime;?>';

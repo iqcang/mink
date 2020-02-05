@@ -1,13 +1,24 @@
-<body onLoad="begintimer()">
 
+<!DOCTYPE html>
+<html>
+<head>
+<title>Page Title</title>
+</head>
+<body>
+
+
+<button onclick="saveUseTime()">Send</button>
+
+
+<script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment-with-locales.min.js"></script>
 <script type="text/javascript">
-
-    //'<?php echo $_SESSION["ucredit"].beginTime;?>';
+    
     // time must be format YYYY-MM-DD HH:mm:ss
-    // moment('2020-02-02 12:00:00') or moment({ year: 2020, month: 1, day :2, hour :12, minute: 00})
-    var beginTime = moment({ year: 2020, month: 1, day :1, hour :14, minute: 30})
-
+    var beginTime = moment('2020-02-05 15:00:00') 
     
     function checkUseTime() {
         var end = moment(Date.now());
@@ -32,37 +43,29 @@
 
     function saveUseTime() {
         var data = checkUseTime();
+        console.log("data ", data);
 
         $.ajax({  
             type: 'POST',  
             url: 'test.php', 
             data: data,
             success: function(response) {
-                // {isExpired: false, remain: 50, limit: 100}
-                if (response.isExpired) {
-                    alert("Your account had expired")
-                } else {
-                    alert("Remainng time " + response.remain + " minutes")
-                }
+                console.log("response form controller ", response)
             },
-            error: function(err) {
+            error: function() {
                 console.error("Error occur to send useTime " + err)
             }
         });
     }
-
 </script>
+</body>
+</html>
 
 
-<div id=dplay ></div>
+<?php 
+    echo "Hello Mink";
+?>
 
 
-<?php echo"curmin= $curmin";?>
 
 
-
-<form name="frmTest" action="Modules/logout.php">
-
-<!--updatetime beforelogout-->
-<!--ใส่ Form-->
-</form>
